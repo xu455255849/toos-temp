@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { STATUS_CODE } from './conf/base'
 
-const mode = process.env.NODE_ENV === 'development' ? 'http://dashboard.test.yunpaishe.com' : ''
+const mode = process.env.NODE_ENV === 'development' ? 'http://dashboard.yunxi.tv/' : ''
 
 function ApiResult (statusCode, data, message) {
   this.statusCode = statusCode || -1
@@ -16,7 +16,8 @@ function ApiResult (statusCode, data, message) {
 }
 
 axios.defaults.baseURL = mode
-axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
 function handleReponse (response) {
   let result = response
@@ -40,31 +41,28 @@ export async function get (apiName, params) {
     return handleReponse(response)
   } catch (e) {
     let resp = e.response
-    if (resp) {
-      /* eslint-disable no-new */
-      new ApiResult(resp.status, e, resp.statusText)
-    }
-    return new ApiResult(-1, e, '请求失败，请稍后重试。')
+    return new ApiResult(resp.status, e, resp.statusText)
   }
 }
 
 export async function post (apiName, data) {
   try {
-    let formData = new FormData()
+    /*let formData = new FormData()
     for (let key in data) {
       formData.append(key, data[key])
+    }*/
+    let params = new URLSearchParams();
+    for (let key in data) {
+      params.append(key, data[key])
     }
     let response = await axios({
       method: 'post',
       url: apiName,
-      data: formData
+      data: params
     })
     return handleReponse(response)
   } catch (e) {
     let resp = e.response
-    if (resp) {
-      new ApiResult(resp.status, e, resp.statusText)
-    }
-    return new ApiResult(-1, e, '请求失败，请稍后重试。')
+    return new ApiResult(resp.status, e, resp.statusText)
   }
 }
