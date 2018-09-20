@@ -4,19 +4,18 @@
         :data="tbData.tableData"
         style="width: 100%"
         v-loading="tbData.loading"
-        @expand-change="expandChange"
     >
       <el-table-column
           type="index"
           :index="indexMethod"
-          width="60"
+          width="70"
       ></el-table-column>
       <template v-for="item in tbData.col">
         <el-table-column
             v-if="item.type == 'operation'"
             :prop="item.data"
             :label="item.label"
-            min-width="100"
+            :min-width="item.width"
         >
           <template slot-scope="scope">
             <el-button
@@ -28,8 +27,7 @@
                 @click="btn.fn(scope.row)"
             >
               <div v-if="btn.name">{{ btn.name}}</div>
-              <div v-else-if="scope.row.disable == '0'">禁播</div>
-              <span v-else>解封</span>
+              <span v-else>{{ btn.mixName(scope.row) }}</span>
             </el-button>
           </template>
         </el-table-column>
@@ -68,6 +66,7 @@
                 v-model="scope.row.categoryId"
                 placeholder="请选择"
                 size="mini"
+                clearable
                 @change="item.fn(scope.row.id, scope.row.categoryId)"
             >
               <el-option
@@ -77,29 +76,6 @@
                   :value="item.id"
               ></el-option>
             </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column
-            v-else-if="item.type == 'tenantForbid'"
-            :prop="item.data"
-            :label="item.label"
-            min-width="100"
-        >
-          <template slot-scope="scope">
-            <el-button
-                v-for="btn in item.btnArr"
-                :key="btn.name"
-                :style="{ color: btn.color }"
-                type="text"
-                size="mini"
-                @click="btn.fn(scope.row)"
-            >
-              <div v-if="btn.name">{{ btn.name}}</div>
-              <div v-else>
-                <span v-if="scope.row.blockedAt == null">封禁</span>
-                <span v-else>解封</span>
-              </div>
-            </el-button>
           </template>
         </el-table-column>
         <!-- end -->
@@ -151,11 +127,11 @@
         >
           <template slot-scope="scope">
             <el-select
+                style="position: relative"
                 v-model="scope.row.categoryId"
                 placeholder="请选择"
                 size="mini"
                 multiple
-                @change="item.fn(scope.row)"
             >
               <el-option
                   v-for="item in $store.state.app.categoryList"
@@ -163,56 +139,28 @@
                   :label="item.name"
                   :value="String(item.id)"
               ></el-option>
+              <el-button @click="item.fn(scope.row)" style="width: 100%;position: absolute;bottom: -30px;z-index: 999" size="mini" type="primary">保存</el-button>
             </el-select>
           </template>
         </el-table-column>
+        <!-- end -->
+        
         <el-table-column
-            v-else-if="item.type == 'activityOperation'"
+            v-else-if="item.type == 'avatar'"
             :prop="item.data"
             :label="item.label"
-            min-width="150"
         >
           <template slot-scope="scope">
-            <el-button
-                v-for="btn in item.btnArr"
-                :key="btn.name"
-                type="text"
-                size="mini"
-                :style="{ color: btn.color }"
-                @click="btn.fn(scope.row)"
-            >
-              <div v-if="btn.name">{{ btn.name}}</div>
-              <div v-else-if="scope.row.disable == '0'">禁播</div>
-              <span v-else>解封</span>
-            </el-button>
+            <img class="avatar" :src="scope.row.avatar" onerror="this.src = 'https://static.yunxi.tv/yunxi/business/common/images/defaultavatar.png'" />
+            {{ scope.row.username }}
           </template>
         </el-table-column>
-        <!-- end -->
-        <el-table-column
-            v-else-if="item.type == 'financeExpand'"
-            type="expand"
-        >
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="收款方">
-                <span>云犀云课</span>
-              </el-form-item>
-              <el-form-item label="付款方式">
-                <span>微信支付</span>
-              </el-form-item>
-              <el-form-item label="交易单号">
-                <span>{{ props.row.outTradeNo }}</span>
-              </el-form-item>
-              <el-form-item label="商户号">
-                <span>云犀</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>
+        
         <el-table-column
             v-else
             :prop="item.data"
             :label="item.label"
+            :min-width="item.width"
         ></el-table-column>
       </template>
     </el-table>
@@ -258,9 +206,6 @@
       changePage (page) {
         this.tbData.currentPage= page;
         this.$emit('change')
-      },
-      expandChange () {
-        console.log('1111')
       }
     }
   }
@@ -271,11 +216,15 @@
     .coverImg {
       max-width: 100%;
     }
+    .avatar {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
     .el-button+.el-button {
       margin-left: 0;
-    }
-    .el-table td div {
-      margin-right: 10px;
     }
     .el-button--text {
       margin-right: 10px;
@@ -284,7 +233,7 @@
       font-size: 0;
     }
     .demo-table-expand label {
-      width: 90px;
+      width: 120px;
       color: #909399;
     }
     .demo-table-expand .el-form-item {
