@@ -61,5 +61,37 @@ function toShowTime(time) {
   
   return renderHtml + minute;
 }
-  
-  console.log(format1(new Date(), 'yy-M-d h:m:s'))
+
+/**
+ * 秒数格式化
+ * @param seconds
+ * @returns {string}
+ */
+function secondsFormat(seconds) {
+  var d,h,m,s;
+  d = Math.floor(seconds/1000/60/60/24)
+  h = Math.floor(seconds/1000/60/60%24) < 10 ? '0' + Math.floor(seconds/1000/60/60%24) : Math.floor(seconds/1000/60/60%24)
+  m = Math.floor(seconds/1000/60%60) < 10 ? '0' + Math.floor(seconds/1000/60%60) : Math.floor(seconds/1000/60%60)
+  s = Math.floor(seconds/1000%60) <  10 ? '0' + Math.floor(seconds/1000%60) : Math.floor(seconds/1000%60)
+  return h + ':' + m + ':' + s
+}
+
+
+/*countDown () { 倒计时
+  var now = Date.now();
+  var end = this.startTime;
+  var leftTime = end - now;
+  var d,h,m,s;
+  if (leftTime>=0) {
+    d = Math.floor(leftTime/1000/60/60/24);
+    h = Math.floor(leftTime/1000/60/60%24);
+    m = Math.floor(leftTime/1000/60%60);
+    s = Math.floor(leftTime/1000%60);
+    this.countTime = '距离直播开始还有：' + d+"天" + h+"时" +  m+"分" + s+"秒";
+    setTimeout(this.countDown, 1000)
+  } else {
+    setTimeout(function () {
+      location.reload()
+    }, 2000);
+  }
+},*/
