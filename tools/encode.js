@@ -9,3 +9,17 @@ function htmlspecialchars (str) {
 }
 var html = '<p>qweqw qweqweqw</p>'
 console.log(htmlspecialchars(html))
+
+/**
+ * 过滤对象空值
+ * @param data
+ * @returns {*}
+ */
+function filterParams (data) {
+  for (let key in data) {
+    if (data[key] === '') {
+      delete data[key]
+    }
+  }
+  return data
+}
