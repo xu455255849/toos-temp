@@ -5,3 +5,14 @@ var a = {
   }
   
 }
+
+
+let dateServer = value => value.replace(/(d{4})(d{2})(d{2})/g, '$1-$2-$3')
+
+
+
+export { dateServer }
+
+import * as custom from './common/filters/custom'
+
+Object.keys(custom).forEach(key => Vue.filt er(key, custom[key]))
