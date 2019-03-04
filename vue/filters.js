@@ -1,17 +1,24 @@
-var a = {
-  maxTitle: function (value) {
-    let val = new String(value);
-    return val.length > 23 ? val.slice(0, 23).trim() + "..." : val.trim();
-  }
-  
+export default {
+  videoTimeFormat: function(seconds) {
+  let h, m, s;
+  h =
+    Math.floor((seconds / 60 / 60) % 24) < 10
+      ? "0" + Math.floor((seconds / 60 / 60) % 24)
+      : Math.floor((seconds / 60 / 60) % 24);
+  m =
+    Math.floor((seconds / 60) % 60) < 10
+      ? "0" + Math.floor((seconds / 60) % 60)
+      : Math.floor((seconds / 60) % 60);
+  s =
+    Math.floor(seconds % 60) < 10
+      ? "0" + Math.floor(seconds % 60)
+      : Math.floor(seconds % 60);
+  return h + ":" + m + ":" + s;
+},
 }
 
 
-let dateServer = value => value.replace(/(d{4})(d{2})(d{2})/g, '$1-$2-$3')
-
-
-
-export { dateServer }
+// 实例
 
 import * as custom from './common/filters/custom'
 

@@ -1,5 +1,6 @@
-import base from './common/base'
+import token from "./token";
+
 
 export default {
-  base
-}
+  token
+};

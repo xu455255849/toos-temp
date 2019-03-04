@@ -1,68 +1,78 @@
-import axios from 'axios'
-import { STATUS_CODE } from './conf/base'
+import axios from "axios";
+import { STATUS_CODE, HOST_API } from "./conf/base";
 
-const mode = process.env.NODE_ENV === 'development' ? 'http://dashboard.yunxi.tv/' : ''
+let mode = "";
+if (location.host === HOST_API.test_host) {
+  mode = HOST_API.test_api;
+} else if (location.host === HOST_API.online_host) {
+  mode = HOST_API.online_api;
+} else if (location.host === HOST_API.dev_host) {
+  mode = HOST_API.dev_api;
+}
+axios.defaults.baseURL = mode;
+axios.defaults.withCredentials = true;
+axios.defaults.headers["Content-Type"] = "application/json";
 
-function ApiResult (statusCode, data, message) {
-  this.statusCode = statusCode || -1
-  this.data = data || {}
-  this.message = message || ''
-  this.succeed = function () {
-    return this.statusCode === STATUS_CODE.SUCCEED
-  }
-  this.fail = function () {
-    return this.statusCode !== STATUS_CODE.SUCCEED
-  }
+function ApiResult(statusCode, data, message) {
+  this.statusCode = statusCode || -1;
+  this.data = data || {};
+  this.message = message || "";
+
+  this.succeed = function() {
+    return this.statusCode === STATUS_CODE.SUCCEED;
+  };
+
+  this.fail = function() {
+    return this.statusCode !== STATUS_CODE.SUCCEED;
+  };
 }
 
-axios.defaults.baseURL = mode
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-
-function handleReponse (response) {
-  let result = response
-  if (typeof result === 'string') {
+function handleReponse(response) {
+  var result = response;
+  if (typeof result == "string") {
     try {
-      result = JSON.parse(result)
+      result = JSON.parse(result);
     } catch (e) {
-      return new ApiResult(STATUS_CODE.PARSE_JSON, {}, '解析数据出错，请稍后重试。')
+      return new ApiResult(
+        STATUS_CODE.PARSE_JSON,
+        {},
+        "解析数据出错，请稍后重试。"
+      );
     }
   }
-  return new ApiResult(result.data.statusCode, result.data.data, result.data.message)
+  return new ApiResult(result.data.code, result.data.data, result.data.message);
 }
 
-export async function get (apiName, params) {
+export async function get(apiName, params) {
   try {
-    let response = await axios({
-      method: 'get',
+    var response = await axios({
+      method: "get",
       url: apiName,
       params: params
-    })
-    return handleReponse(response)
+    });
+    return handleReponse(response);
   } catch (e) {
-    let resp = e.response
-    return new ApiResult(resp.status, e, resp.statusText)
+    var resp = e.response;
+    if (resp) {
+      new ApiResult(resp.status, e, resp.statusText);
+    }
+    return new ApiResult(-1, e, "请求失败，请稍后重试。");
   }
 }
 
-export async function post (apiName, data) {
+export async function post(apiName, data) {
   try {
-    /*let formData = new FormData()
-    for (let key in data) {
-      formData.append(key, data[key])
-    }*/
-    let params = new URLSearchParams();
-    for (let key in data) {
-      params.append(key, data[key])
-    }
-    let response = await axios({
-      method: 'post',
+    var response = await axios({
+      method: "post",
       url: apiName,
-      data: params
-    })
-    return handleReponse(response)
+      data: data
+    });
+    return handleReponse(response);
   } catch (e) {
-    let resp = e.response
-    return new ApiResult(resp.status, e, resp.statusText)
+    var resp = e.response;
+    if (resp) {
+      new ApiResult(resp.status, e, resp.statusText);
+    }
+    return new ApiResult(-1, e, "请求失败，请稍后重试。");
   }
 }
