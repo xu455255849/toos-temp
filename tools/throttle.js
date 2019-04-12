@@ -1,19 +1,20 @@
-const throttle = function (fn, delay, isDebounce) {
-  let timer;
-  let lastCall = 0;
-  console.log(22);
-  return function (...args) {
-    if (isDebounce) {
+function throttleAndDebounce(fn, delay, isThrottle) {
+  let lastCallTime = 0, timer = null;
+  return (...args) => {
+    if (isThrottle) {
+      const now = Date.now();
+      if (now - lastCallTime < delay) return;
+      lastCallTime = now;
+      fn(...args)
+    } else {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        console.log(2222);
         fn(...args)
       }, delay)
-    } else {
-      const now = new Date().getTime();
-      if (now - lastCall < delay) return;
-      lastCall = now;
-      fn(...args)
     }
   }
-};
+}
+
+window.onscroll = throttleAndDebounce(function (...args) {
+  console.log(...args)
+}, 3000, true);
