@@ -53,3 +53,19 @@ if (browser.versions.mobile() || browser.versions.ios() || browser.versions.andr
   alert('移动端');
   
 }
+
+
+
+//运行环境是浏览器
+let inBrowser = typeof window !== 'undefined';
+//运行环境是微信
+let inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
+let weexPlatform = inWeex && WXEnvironment.platform.toLowerCase();
+//浏览器 UA 判断
+let UA = inBrowser && window.navigator.userAgent.toLowerCase();
+let isIE = UA && /msie|trident/.test(UA);
+let isIE9 = UA && UA.indexOf('msie 9.0') > 0;
+let isEdge = UA && UA.indexOf('edge/') > 0;
+let isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android');
+let isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios');
+let isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
