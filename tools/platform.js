@@ -69,3 +69,43 @@ let isEdge = UA && UA.indexOf('edge/') > 0;
 let isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android');
 let isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios');
 let isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
+
+/**
+ * 获取当前设备经纬度信息
+ */
+function getGeolocation() {
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const crd = pos.coords;
+                localStorage.setItem('longitude', crd.longitude);
+                localStorage.setItem('latitude', crd.latitude);
+            },
+            err => {
+                console.warn('ERROR(' + err.code + '): ' + err.message);
+            }
+        );
+    }
+}
+
+function  getOsVersion() {
+    const ua = navigator.userAgent;
+    const winMap = new Map();
+    winMap.set('Windows NT 10.0', 'Win 10');
+    winMap.set('Windows NT 6.3', 'Win 2012');
+    winMap.set('Windows NT 6.2', 'Win 8');
+    winMap.set('Windows NT 6.1', 'Win 7');
+    winMap.set('Windows NT 6.0', 'Win Vista');
+    winMap.set('Windows NT 5.2', 'Win 2003');
+    winMap.set('Windows NT 5.1', 'Win XP');
+    winMap.set('Windows NT 5.0', 'Win 2000');
+    
+    let os = '其他';
+    if (navigator.platform.indexOf('Mac') > -1) return 'Mac';
+    if (navigator.platform.indexOf('Win') > -1) {
+        winMap.forEach( (val, key) => {
+            if (ua.indexOf(key) > -1) os = val
+        })
+    }
+    return os
+}
