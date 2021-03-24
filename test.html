@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div style="height: 10000px">
+  <div style="height: 1000px; background: #221"></div>
+  <img src="loading.gif" data-src="//dn-kdt-img-test.qbox.me/upload_files/2015/05/22/FueLC31mAn9YUuhTVwMHvy9hwwPB.png">
+  <div style="height: 1000px; background: #e60000"></div>
+  <img src="loading.gif" data-src="//img.yzcdn.cn/public_files/2019/07/17/4a44c86ebc79b51e28ad324c3192d70c.png">
+</div>
+</body>
+<script>
+	const intersectionObserver = new IntersectionObserver(enteris => {
+		console.log(enteris)
+		enteris.forEach(entry => {
+			const lazyImage = entry.target
+			if (entry.isIntersecting && lazyImage.getAttribute('src') == 'loading.gif') {
+				lazyImage.src = lazyImage.dataset.src
+				observe.unobserve(lazyImage)
+			}
+		})
+	})
+ 
+ 
+	
+	const imgs = document.getElementsByTagName('IMG')
+	console.log(imgs)
+	// 观察器的配置（需要观察什么变动）
+	const config = { attributes: true, childList: true, subtree: true };
+	
+	
+	imgs.forEach(item => {
+	  intersectionObserver.observe(item)
+		observer.observe(item, config);
+  })
+  
+</script>
+</html>
