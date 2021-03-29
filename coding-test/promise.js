@@ -16,7 +16,7 @@ class myPromise {
 	}
 	_resolve(value) {
 		this.state = 'fulfilled';
-		this.value =
+		this.value = value;
 		this.callbacks.forEach(fn => fn(value)); // 参考观察者模式 ，resolve 其实就是将注册的回调一一执行
 	}
 }

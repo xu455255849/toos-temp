@@ -15,7 +15,6 @@ function _deepClone(obj, map = new WeakMap()) {
 	// Reflect 比起 Object.keys 可以遍历到 Symbol 的属性值
 	const keys = Reflect.ownKeys(obj)
 	keys.forEach(key => {
-		console.log(key, copy)
 		copy[key] = _deepClone(obj[key], map)
 	})
 	return copy
