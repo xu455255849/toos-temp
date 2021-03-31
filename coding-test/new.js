@@ -12,3 +12,4 @@ function Parent(name, age) {
 
 console.log(new Parent('xu', 18))
 console.log(myNew(Parent,'xu', 18))
+
