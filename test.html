@@ -19,22 +19,17 @@
 			const lazyImage = entry.target
 			if (entry.isIntersecting && lazyImage.getAttribute('src') == 'loading.gif') {
 				lazyImage.src = lazyImage.dataset.src
-				observe.unobserve(lazyImage)
+				intersectionObserver.unobserve(lazyImage)
 			}
 		})
 	})
  
  
 	
-	const imgs = document.getElementsByTagName('IMG')
-	console.log(imgs)
-	// 观察器的配置（需要观察什么变动）
-	const config = { attributes: true, childList: true, subtree: true };
-	
+	const imgs = document.querySelectorAll('img[data-src]')
 	
 	imgs.forEach(item => {
 	  intersectionObserver.observe(item)
-		observer.observe(item, config);
   })
   
 </script>
