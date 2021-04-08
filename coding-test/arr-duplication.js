@@ -10,3 +10,4 @@ let myOrderedArray = myArray.reduce(function (accumulator, currentValue) {
 	}
 	return accumulator
 }, [])
+
